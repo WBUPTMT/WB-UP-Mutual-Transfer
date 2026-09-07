@@ -327,7 +327,7 @@
     // 1. Insert record into Supabase
     const { data: savedRecord, error: insertError } = await client
       .from('teachers')
-      .insert([submission])
+      .upsert([submission], { onConflict: 'mobile' })
       .select()
       .single();
 
@@ -367,7 +367,11 @@
       return matchForMe && matchForThem && canIGoToTheirSchool && canTheyComeToMySchool;
     });
 
-    displayResults(mutualMatches);
+    const uniqueMatches = mutualMatches.filter((teacher, index, self) =>
+      index === self.findIndex(t => t.mobile === teacher.mobile)
+    );
+
+    displayResults(uniqueMatches);
   });
 
   function displayResults(matches) {
