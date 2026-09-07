@@ -253,7 +253,7 @@
         </div>
 
         <div class="full-width" style="margin-top: 8px;">
-          <button type="submit" id="submitBtn" class="submit-btn">Register & View Matches</button>
+          <button type="submit" id="submitBtn" class="submit-btn">Submit & View Matches</button>
         </div>
       </div>
     </form>
@@ -297,7 +297,7 @@
     e.preventDefault();
     const btn = document.getElementById('submitBtn');
     btn.disabled = true;
-    btn.innerText = "Registering and searching for matches...";
+    btn.innerText = "Submitting and searching for matches...";
 
     const currentDist = document.getElementById('currentDistrict').value;
 
@@ -334,7 +334,7 @@
     if (insertError) {
       alert("Registration failed: " + insertError.message);
       btn.disabled = false;
-      btn.innerText = "Register & View Matches";
+      btn.innerText = "Submit & View Matches";
       return;
     }
 
@@ -348,7 +348,7 @@
       .neq('id', savedRecord.id);
 
     btn.disabled = false;
-    btn.innerText = "Register & View Matches";
+    btn.innerText = "Submit & View Matches";
 
     if (searchError) {
       alert("Error finding matches: " + searchError.message);
