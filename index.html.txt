@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WB Upper Primary Mutual Transfer Portal</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-dark: #172554;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #cbd5e1;
+      --text: #0f172a;
+      --muted: #64748b;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 24px 16px;
+    }
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+    h1 {
+      text-align: center;
+      color: var(--primary);
+      margin: 0 0 6px 0;
+      font-size: 24px;
+    }
+    p.subtitle {
+      text-align: center;
+      color: var(--muted);
+      margin: 0 0 24px 0;
+      font-size: 14px;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      margin-bottom: 24px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+    .full-width {
+      grid-column: 1 / -1;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 6px;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+      background-color: #fff;
+    }
+    input:focus, select:focus {
+      outline: 2px solid var(--primary);
+      border-color: transparent;
+    }
+    .district-slots {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+      margin-top: 6px;
+    }
+    button.submit-btn {
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      padding: 14px;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.2s;
+    }
+    button.submit-btn:hover {
+      background: var(--primary-dark);
+    }
+    #resultSection {
+      display: none;
+    }
+    .match-card {
+      border: 1px solid #bfdbfe;
+      background: #eff6ff;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .match-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 0 0 8px 0;
+    }
+    .match-detail {
+      font-size: 14px;
+      margin: 4px 0;
+    }
+    .whatsapp-btn {
+      display: inline-block;
+      margin-top: 10px;
+      background: #16a34a;
+      color: white;
+      text-decoration: none;
+      padding: 6px 14px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .no-match {
+      text-align: center;
+      padding: 30px 16px;
+      color: #b91c1c;
+      background: #fef2f2;
+      border: 1px dashed #f87171;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>WB Upper Primary Mutual Transfer Portal</h1>
+  <p class="subtitle">Fill out your profile to discover reciprocal mutual transfer partners.</p>
+
+  <div class="card" id="formCard">
+    <form id="regForm">
+      <div class="form-grid">
+        <div>
+          <label>Name</label>
+          <input type="text" id="name" required placeholder="Full Name">
+        </div>
+
+        <div>
+          <label>Mobile No.</label>
+          <input type="tel" id="mobile" required pattern="[0-9]{10}" placeholder="10-digit mobile number">
+        </div>
+
+        <div>
+          <label>Gender (Strict Match)</label>
+          <select id="gender" required>
+            <option value="" disabled selected>Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Subject (Strict Match)</label>
+          <select id="subject" required>
+            <option value="" disabled selected>Select Subject</option>
+            <option value="Bengali">Bengali</option>
+            <option value="English">English</option>
+            <option value="Sanskrit">Sanskrit</option>
+            <option value="History">History</option>
+            <option value="Geography">Geography</option>
+            <option value="Pure Science">Pure Science</option>
+            <option value="Bio Science">Bio Science</option>
+            <option value="Urdu">Urdu</option>
+            <option value="Hindi">Hindi</option>
+            <option value="Arabic">Arabic</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Medium of Instruction (Strict Match)</label>
+          <select id="medium" required>
+            <option value="" disabled selected>Select Medium</option>
+            <option value="Bengali">Bengali</option>
+            <option value="English">English</option>
+            <option value="Hindi">Hindi</option>
+            <option value="Urdu">Urdu</option>
+            <option value="Nepali">Nepali</option>
+            <option value="Santhali">Santhali</option>
+          </select>
+        </div>
+
+        <div>
+          <label>School Type</label>
+          <select id="schoolType" required>
+            <option value="" disabled selected>Select School Type</option>
+            <option value="Co-ed">Co-ed</option>
+            <option value="Boys">Boys</option>
+            <option value="Girls">Girls</option>
+          </select>
+        </div>
+
+        <div>
+          <label>School Name</label>
+          <input type="text" id="schoolName" required placeholder="Current School Name">
+        </div>
+
+        <div>
+          <label>Current District</label>
+          <select id="currentDistrict" required></select>
+        </div>
+
+        <div>
+          <label>Current Block</label>
+          <input type="text" id="currentBlock" required placeholder="Current Block">
+        </div>
+
+        <div class="full-width">
+          <label>Desired Districts (Select minimum 1, up to 6 choices)</label>
+          <div class="district-slots">
+            <div>
+              <label style="font-size:11px;">Preference 1 (Required)</label>
+              <select id="pref1" required class="pref-dist"></select>
+            </div>
+            <div>
+              <label style="font-size:11px;">Preference 2 (Optional)</label>
+              <select id="pref2" class="pref-dist"></select>
+            </div>
+            <div>
+              <label style="font-size:11px;">Preference 3 (Optional)</label>
+              <select id="pref3" class="pref-dist"></select>
+            </div>
+            <div>
+              <label style="font-size:11px;">Preference 4 (Optional)</label>
+              <select id="pref4" class="pref-dist"></select>
+            </div>
+            <div>
+              <label style="font-size:11px;">Preference 5 (Optional)</label>
+              <select id="pref5" class="pref-dist"></select>
+            </div>
+            <div>
+              <label style="font-size:11px;">Preference 6 (Optional)</label>
+              <select id="pref6" class="pref-dist"></select>
+            </div>
+          </div>
+        </div>
+
+        <div class="full-width" style="margin-top: 8px;">
+          <button type="submit" id="submitBtn" class="submit-btn">Register & View Matches</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="card" id="resultSection">
+    <h2 style="margin-top:0; color: var(--primary);">Matching Profiles</h2>
+    <div id="matchesContainer"></div>
+  </div>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://nmnqeuifgomnshnivesb.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5tbnFldWlmZ29tbnNobml2ZXNiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0OTgwNzUsImV4cCI6MjEwNDA3NDA3NX0.E5fZWYhQNXB5zMp1beeFf9tqitcXRfOxO62m2Otj8sM';
+  const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  const wbDistricts = [
+    "Alipurduar", "Bankura", "Birbhum", "Cooch Behar", "Dakshin Dinajpur", 
+    "Darjeeling", "Hooghly", "Howrah", "Jalpaiguri", "Jhargram", "Kalimpong", 
+    "Kolkata", "Malda", "Murshidabad", "Nadia", "North 24 Parganas", 
+    "Paschim Bardhaman", "Paschim Medinipur", "Purba Bardhaman", "Purba Medinipur", 
+    "Purulia", "South 24 Parganas", "Uttar Dinajpur"
+  ];
+
+  function setupDistrictDropdowns() {
+    const curSelect = document.getElementById('currentDistrict');
+    curSelect.innerHTML = '<option value="" disabled selected>Select Current District</option>' + 
+      wbDistricts.map(d => `<option value="${d}">${d}</option>`).join('');
+
+    const prefSelectors = document.querySelectorAll('.pref-dist');
+    prefSelectors.forEach((sel, index) => {
+      const defaultOption = index === 0 ? "Select Primary Choice" : "-- None --";
+      sel.innerHTML = `<option value="">${defaultOption}</option>` + 
+        wbDistricts.map(d => `<option value="${d}">${d}</option>`).join('');
+    });
+  }
+
+  setupDistrictDropdowns();
+
+  document.getElementById('regForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerText = "Registering and searching for matches...";
+
+    const currentDist = document.getElementById('currentDistrict').value;
+
+    const rawPreferences = [
+      document.getElementById('pref1').value,
+      document.getElementById('pref2').value,
+      document.getElementById('pref3').value,
+      document.getElementById('pref4').value,
+      document.getElementById('pref5').value,
+      document.getElementById('pref6').value
+    ];
+    const desiredDistricts = [...new Set(rawPreferences.filter(d => d && d !== ""))];
+
+    const submission = {
+      name: document.getElementById('name').value.trim(),
+      mobile: document.getElementById('mobile').value.trim(),
+      gender: document.getElementById('gender').value,
+      subject: document.getElementById('subject').value,
+      medium: document.getElementById('medium').value,
+      school_type: document.getElementById('schoolType').value,
+      school_name: document.getElementById('schoolName').value.trim(),
+      current_district: currentDist,
+      current_block: document.getElementById('currentBlock').value.trim(),
+      desired_districts: desiredDistricts
+    };
+
+    // 1. Insert record into Supabase
+    const { data: savedRecord, error: insertError } = await client
+      .from('teachers')
+      .insert([submission])
+      .select()
+      .single();
+
+    if (insertError) {
+      alert("Registration failed: " + insertError.message);
+      btn.disabled = false;
+      btn.innerText = "Register & View Matches";
+      return;
+    }
+
+    // 2. Fetch candidates strictly matching Gender, Subject, Medium
+    const { data: pool, error: searchError } = await client
+      .from('teachers')
+      .select('*')
+      .eq('gender', submission.gender)
+      .eq('subject', submission.subject)
+      .eq('medium', submission.medium)
+      .neq('id', savedRecord.id);
+
+    btn.disabled = false;
+    btn.innerText = "Register & View Matches";
+
+    if (searchError) {
+      alert("Error finding matches: " + searchError.message);
+      return;
+    }
+
+    // 3. Reciprocal district matching
+    const mutualMatches = pool.filter(teacher => {
+      const matchForMe = submission.desired_districts.includes(teacher.current_district);
+      const matchForThem = teacher.desired_districts.includes(submission.current_district);
+      return matchForMe && matchForThem;
+    });
+
+    displayResults(mutualMatches);
+  });
+
+  function displayResults(matches) {
+    const resultSection = document.getElementById('resultSection');
+    const container = document.getElementById('matchesContainer');
+    resultSection.style.display = 'block';
+
+    if (matches.length === 0) {
+      container.innerHTML = `
+        <div class="no-match">
+          No matching profiles found at this moment.<br>
+          <span style="font-size: 13px; font-weight: normal; color: #475569; display:block; margin-top:6px;">
+            Your profile has been saved. As soon as another teacher with matching criteria registers, you will appear in their matches.
+          </span>
+        </div>
+      `;
+    } else {
+      container.innerHTML = matches.map(teacher => `
+        <div class="match-card">
+          <div class="match-title">${teacher.name}</div>
+          <div class="match-detail"><strong>Mobile No.:</strong> ${teacher.mobile}</div>
+          <div class="match-detail"><strong>School Name:</strong> ${teacher.school_name} (${teacher.school_type || 'Co-ed'})</div>
+          <div class="match-detail"><strong>District:</strong> ${teacher.current_district}</div>
+          <div class="match-detail"><strong>Block:</strong> ${teacher.current_block}</div>
+          <a class="whatsapp-btn" href="https://wa.me/91${teacher.mobile.replace(/\\D/g, '')}" target="_blank">Chat on WhatsApp</a>
+        </div>
+      `).join('');
+    }
+
+    resultSection.scrollIntoView({ behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>
