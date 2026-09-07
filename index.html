@@ -342,11 +342,9 @@
     const { data: pool, error: searchError } = await client
       .from('teachers')
       .select('*')
-      .eq('gender', submission.gender)
       .eq('subject', submission.subject)
       .eq('medium', submission.medium)
       .neq('id', savedRecord.id);
-
     btn.disabled = false;
     btn.innerText = "Submit & View Matches";
 
@@ -357,9 +355,16 @@
 
     // 3. Reciprocal district matching
     const mutualMatches = pool.filter(teacher => {
+      // 1. Reciprocal District Check
       const matchForMe = submission.desired_districts.includes(teacher.current_district);
       const matchForThem = teacher.desired_districts.includes(submission.current_district);
-      return matchForMe && matchForThem;
+
+      // 2. School Type Eligibility Rules:
+      // Male cannot go to a Girls' school
+      const canIGoToTheirSchool = !(submission.gender === 'Male' && teacher.school_type === 'Girls');
+      const canTheyComeToMySchool = !(teacher.gender === 'Male' && submission.school_type === 'Girls');
+
+      return matchForMe && matchForThem && canIGoToTheirSchool && canTheyComeToMySchool;
     });
 
     displayResults(mutualMatches);
@@ -384,6 +389,7 @@
         <div class="match-card">
           <div class="match-title">${teacher.name}</div>
           <div class="match-detail"><strong>Mobile No.:</strong> ${teacher.mobile}</div>
+          <div class="match-detail"><strong>Gender:</strong> ${teacher.gender}</div>
           <div class="match-detail"><strong>School Name:</strong> ${teacher.school_name} (${teacher.school_type || 'Co-ed'})</div>
           <div class="match-detail"><strong>District:</strong> ${teacher.current_district}</div>
           <div class="match-detail"><strong>Block:</strong> ${teacher.current_block}</div>
